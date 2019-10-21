@@ -2,7 +2,7 @@ version: "3.7"
 services:
   tcpsrv:
     build: .
-    image: tcpsrv:v3
+    image: tcpsrv:v1
     deploy:
       replicas: 3 
       resources:
