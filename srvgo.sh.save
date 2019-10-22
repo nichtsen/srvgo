@@ -1,12 +1,11 @@
-#!/bin/bash
-
 wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
 tar -C /usr/local -xzf go1.12*.tar.gz
 nano /etc/profile
 # export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:/usr/local/go/bin
 mkdir /home/go
-# nano ~/.bash_profile
-export GOPATH=/home/go
+nano ~/.bash_profile
+# export GOPATH=/home/go
 rm go1.*
 
 sudo apt-get install \
@@ -50,4 +49,4 @@ docker stack deploy -c docker-compose.yml srv
 docker service ls
 cd ..
 ./cli
-# docker stack rm srv
+//docker stack rm srv
