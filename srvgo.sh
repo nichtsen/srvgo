@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function catch() {
-	if [ ${err} != 0 ]; then
+	if [ $err != 0 ]; then
 		echo "Error:" $err 
 		exit 1
 	fi
