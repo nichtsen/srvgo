@@ -1,53 +1,101 @@
 #!/bin/bash
 
-wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
-tar -C /usr/local -xzf go1.12*.tar.gz
-nano /etc/profile
-# export PATH=$PATH:/usr/local/go/bin
-mkdir /home/go
-# nano ~/.bash_profile
-export GOPATH=/home/go
-rm go1.*
+function catch() {
+	if [ ${err} != 0 ]; then
+		echo "Error:" $err 
+		exit 1
+	fi
+}
+function getGolang() {
+	wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
+	$err=$?
+	catch
+	tar -C /usr/local -xzf go1.12*.tar.gz
+	$err=$?
+	catch
+	export PATH=$PATH:/usr/local/go/bin
+	$err=$?
+	catch
+	echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile
+	$err=$?
+	catch
+	mkdir /home/go
+	$err=$?
+	catch
+        export GOPATH=/home/go
+	$err=$?
+	catch
+        rm go1.*
+}
+function getDocker() {
+	sudo apt-get install \
+		apt-transport-https \
+		ca-certificates \
+		curl \
+		gnupg2 \
+		software-properties-common
+	$err=$?
+	catch
+	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+	$err=$?
+	catch
+	# sudo apt-key fingerprint 0EBFCD88
+	sudo add-apt-repository \
+		"deb [arch=amd64] https://download.docker.com/linux/debian \
+		$(lsb_release -cs) \
+		stable"
+	$err=$?
+	catch
+	sudo apt-get update
+        #sudo apt-get install docker-ce docker-ce-cli containerd.io
+	$err=$?
+	catch
+	sudo apt-get install \
+		docker-ce=5:18.09.1~3-0~debian-stretch \
+		docker-ce-cli=5:18.09.1~3-0~debian-stretch \
+		containerd.io
+	$err=$?
+	catch
+	sudo docker run hello-world
+	$err=$?
+	catch
+}
+function prGet() {
+	apt-get install git,sudo
+	$err=$?
+	catch
+	# optional:
+	# git config user.name
+	# git config user.email
+}	
 
-sudo apt-get install \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg2 \
-    software-properties-common
-curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-sudo apt-key fingerprint 0EBFCD88
-sudo add-apt-repository \
-   "deb [arch=amd64] https://download.docker.com/linux/debian \
-   $(lsb_release -cs) \
-   stable"
-sudo apt-get update
-   //sudo apt-get install docker-ce docker-ce-cli containerd.io
-sudo apt-get install \
-    docker-ce=5:18.09.1~3-0~debian-stretch \
-    docker-ce-cli=5:18.09.1~3-0~debian-stretch \
-    containerd.io
-sudo docker run hello-world
-apt-get install git
-apt-get install sudo
-# optional:
-# git config user.name
-# git config user.email 
-go get github.com/nichtsen/srvgo.git
-ln -s /home/go/src/github.com/nichtsen link
-mv link /root
-cd /root/link/srvgo
-cp -r dk ~/dk
-cd /root/link/srvgo/server
-go build -o ~/dk/xf
-cd /root/link/srvgo/client
-go build -o ~/cli
-cd ~/dk
-docker build -t tcpsrv:v1 .
-docker image ls
-docker swarm init
-docker stack deploy -c docker-compose.yml srv
-docker service ls
-cd ..
-./cli
-# docker stack rm srv
+function getSrvgo() {
+	go get github.com/nichtsen/srvgo
+        ln -s /home/go/src/github.com/nichtsen link
+	$err=$?
+	catch
+        mv link /root
+        cd /root/link/srvgo
+        cp -r dk ~/dk
+	$err=$?
+	catch
+        cd /root/link/srvgo/server
+        go build -o /root/dk/xf
+        $err=$?
+	catch
+	cd /root/link/srvgo/client
+	go build -o /root/cli
+        $err=$?
+	catch
+	cd /root/dk
+	docker build -t tcpsrv:v1 .
+	$err=$?
+	catch
+        #docker image ls
+        docker swarm init
+	$err=$?
+	catch
+        docker stack deploy -c docker-compose.yml srv
+        docker service ls
+	# docker stack rm srv
+}
