@@ -1,4 +1,4 @@
-# sevgo
+# srvgo
 > A C/S architecture practisinig with docker service
 ## Installation
 ```
