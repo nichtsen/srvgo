@@ -13,10 +13,10 @@ function getGolang() {
 	tar -C /usr/local -xzf go1.12*.tar.gz
 	err=$?
 	catch
-	export PATH=$PATH:/usr/local/go/bin
+	echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile
 	err=$?
 	catch
-	echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile
+	export PATH=$PATH:/usr/local/go/bin
 	err=$?
 	catch
 	mkdir /home/go
