@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function catch() {
-	if [ $err != 0 ]; then
+	if [ $err -ne 0 ]; then
 		echo "Error:" $err 
 		exit 1
 	fi
@@ -60,10 +60,19 @@ function getDocker() {
 	$err=$?
 	catch
 }
-function prGet() {
-	apt-get install git,sudo
-	$err=$?
-	catch
+function preGet() {
+	sudo --version
+	if [ $? -ne 0 ]; then
+		apt-get install sudo
+		$err=$?
+		catch
+	fi
+	git --version 
+	if [ $? -ne 0 ]; then
+		sudo apt-get install git
+		$err=$?
+		catch
+	fi
 	# optional:
 	# git config user.name
 	# git config user.email
@@ -99,3 +108,26 @@ function getSrvgo() {
         docker service ls
 	# docker stack rm srv
 }
+echo "########################################"
+echo "####### step1: check git and sudo ######"
+echo "########################################"
+preGet
+echo "#########################################"
+echo "###### step2: check and get Golang ######"
+echo "#########################################"
+go --version
+if [ $? -ne 0 ]; then
+	getGolang
+fi
+echo "#########################################"
+echo "###### step3: check and get Docker ######"
+echo "#########################################"
+docker --version
+if [ $? -ne 0 ]; then
+	getDocker
+fi
+echo "#############################################"
+echo "###### step4: set up the srvgo service ######"
+echo "#############################################"
+getSrvgo
+
