@@ -12,6 +12,7 @@ To check the running docker services:
 docker service ls
 ```
 Note that 3 replicas are supposed to be running by default
+
 To take down the srvgo service:
 ```
 docker stack rm srv
