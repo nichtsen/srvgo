@@ -115,7 +115,7 @@ preGet
 echo "#########################################"
 echo "###### step2: check and get Golang ######"
 echo "#########################################"
-go --version
+go version
 if [ $? -ne 0 ]; then
 	getGolang
 fi
