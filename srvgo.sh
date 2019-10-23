@@ -8,22 +8,22 @@ function catch() {
 }
 function getGolang() {
 	wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
-	$err=$?
+	err=$?
 	catch
 	tar -C /usr/local -xzf go1.12*.tar.gz
-	$err=$?
+	err=$?
 	catch
 	export PATH=$PATH:/usr/local/go/bin
-	$err=$?
+	err=$?
 	catch
 	echo "export PATH=$PATH:/usr/local/go/bin" >> /etc/profile
-	$err=$?
+	err=$?
 	catch
 	mkdir /home/go
-	$err=$?
+	err=$?
 	catch
         export GOPATH=/home/go
-	$err=$?
+	err=$?
 	catch
         rm go1.*
 }
@@ -34,43 +34,43 @@ function getDocker() {
 		curl \
 		gnupg2 \
 		software-properties-common
-	$err=$?
+	err=$?
 	catch
 	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-	$err=$?
+	err=$?
 	catch
 	# sudo apt-key fingerprint 0EBFCD88
 	sudo add-apt-repository \
 		"deb [arch=amd64] https://download.docker.com/linux/debian \
 		$(lsb_release -cs) \
 		stable"
-	$err=$?
+	err=$?
 	catch
 	sudo apt-get update
         #sudo apt-get install docker-ce docker-ce-cli containerd.io
-	$err=$?
+	err=$?
 	catch
 	sudo apt-get install \
 		docker-ce=5:18.09.1~3-0~debian-stretch \
 		docker-ce-cli=5:18.09.1~3-0~debian-stretch \
 		containerd.io
-	$err=$?
+	err=$?
 	catch
 	sudo docker run hello-world
-	$err=$?
+	err=$?
 	catch
 }
 function preGet() {
 	sudo --version
 	if [ $? -ne 0 ]; then
 		apt-get install sudo
-		$err=$?
+		err=$?
 		catch
 	fi
 	git --version 
 	if [ $? -ne 0 ]; then
 		sudo apt-get install git
-		$err=$?
+		err=$?
 		catch
 	fi
 	# optional:
@@ -81,28 +81,28 @@ function preGet() {
 function getSrvgo() {
 	go get github.com/nichtsen/srvgo
         ln -s /home/go/src/github.com/nichtsen link
-	$err=$?
+	err=$?
 	catch
         mv link /root
         cd /root/link/srvgo
         cp -r dk ~/dk
-	$err=$?
+	err=$?
 	catch
         cd /root/link/srvgo/server
         go build -o /root/dk/xf
-        $err=$?
+        err=$?
 	catch
 	cd /root/link/srvgo/client
 	go build -o /root/cli
-        $err=$?
+        err=$?
 	catch
 	cd /root/dk
 	docker build -t tcpsrv:v1 .
-	$err=$?
+	err=$?
 	catch
         #docker image ls
         docker swarm init
-	$err=$?
+	err=$?
 	catch
         docker stack deploy -c docker-compose.yml srv
         docker service ls
