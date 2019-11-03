@@ -8,33 +8,28 @@ import (
 	"time"
 )
 
-var (
-	ip      = "0.0.0.0:31315"
-	network = "tcp"
-	count   = 0
+const (
+	DEFAULT_PORT = "0.0.0.0:31315"
+	NETWORK      = "tcp"
 )
-
-func main() {
-	server()
-}
+var	count = 0
 
 func server() {
-	lnr, err := net.Listen(network, ip)
-	defer lnr.Close()
+	lnr, err := net.Listen(NETWORK, DEFAULT_PORT)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		log.Println("Listening...")
-	}
+	} 
+	log.Println("Listening...")
+	defer lnr.Close()
 	for {
 		conn, err := lnr.Accept()
-		defer conn.Close()
 		if err != nil {
 			log.Println(err)
-		} else {
-			conn.SetDeadline(time.Now().Add(60 * time.Second))
-			go handleConnection(conn)
-		}
+			break
+		} 
+		defer conn.Close()
+		conn.SetDeadline(time.Now().Add(60 * time.Second))
+		go handleConnection(conn)	
 	}
 }
 
@@ -49,4 +44,8 @@ func handleConnection(conn net.Conn) {
 		log.Println("received: ", msg, "\n", "Remote Address: ", conn.RemoteAddr())
 		conn.Write([]byte("server(" + conn.LocalAddr().String() + ")[" + strconv.Itoa(count) + "]: " + msg + "\n"))
 	}
+}
+
+func main() {
+	server()
 }

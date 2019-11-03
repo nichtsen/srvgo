@@ -10,25 +10,8 @@ import (
 	"time"
 )
 
-var (
-	ip      = "127.0.0.1:31315"
-	network = "tcp"
-)
-
-func main() {
-	f, err := os.Open("address")
-	if err != nil {
-		log.Println("using defaut address")
-	} else {
-		data := make([]byte, 100)
-		len, err := f.Read(data)
-		if err != nil {
-			log.Println(err, "\nusing defaut address")
-		}
-		ip = string(data[:len])
-	}
-	client()
-}
+const NETWORK = "tcp"
+var ip = "127.0.0.1:31315"
 
 type msg struct {
 	Dst  string    `json:"dst"`
@@ -37,14 +20,13 @@ type msg struct {
 }
 
 func client() {
-	conn, err := net.Dial(network, ip)
-	conn.SetDeadline(time.Now().Add(10 * time.Second))
-	defer conn.Close()
+	conn, err := net.Dial(NETWORK, ip)
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		log.Println("connected")
-	}
+	} 
+	log.Println("Connected with server!")
+	defer conn.Close()
+	conn.SetDeadline(time.Now().Add(10 * time.Second))
 
 	go listen(conn)
 
@@ -57,22 +39,21 @@ func client() {
 		m.Date = time.Now()
 		send(m, conn)
 	}
-	//mb := *(*[]byte)(unsafe.Pointer(&m))
 }
 
 func send(m *msg, conn net.Conn) {
 	jb, err := json.Marshal(m)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	str := string(jb)
 	_, err = fmt.Fprintf(conn, str+"\n")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
-	fmt.Println("written")
+	log.Println("Message has been written!")
 	time.Sleep(time.Second * 1)
 }
 
@@ -80,9 +61,24 @@ func listen(conn net.Conn) {
 	for {
 		resp, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return
 		}
-		fmt.Println(resp)
+		log.Println(resp)
 	}
+}
+
+func main() {
+	f, err := os.Open("address")
+	if err != nil {
+		log.Println("Using defaut address")
+	} else {
+		data := make([]byte, 100)
+		len, err := f.Read(data)
+		if err != nil {
+			log.Println(err, "Using defaut address")
+		}
+		ip = string(data[:len])
+	}
+	client()
 }
