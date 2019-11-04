@@ -10,7 +10,9 @@ import (
 	"time"
 )
 
+//NETWORK defaut network
 const NETWORK = "tcp"
+
 var ip = "127.0.0.1:31315"
 
 type msg struct {
@@ -23,7 +25,7 @@ func client() {
 	conn, err := net.Dial(NETWORK, ip)
 	if err != nil {
 		log.Fatal(err)
-	} 
+	}
 	log.Println("Connected with server!")
 	defer conn.Close()
 	conn.SetDeadline(time.Now().Add(10 * time.Second))
