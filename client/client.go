@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-//NETWORK defaut network
+//NETWORK default network
 const NETWORK = "tcp"
 
 var ip = "127.0.0.1:31315"
