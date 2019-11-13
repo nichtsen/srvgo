@@ -4,7 +4,7 @@
 ```
 git clone https://github.com/nichtsen/srvgo.git
 cd srvgo
-chmod u+x srvgo.sh
+chmod +x setup.sh
 ./srvgo.sh
 ```
 To check the running docker services:
