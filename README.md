@@ -1,5 +1,5 @@
 # srvgo
-> A C/S architecture practisinig with docker service
+> A C/S architecture testing with docker service
 ## Installation
 ```
 git clone https://github.com/nichtsen/srvgo.git
