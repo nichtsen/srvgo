@@ -9,16 +9,17 @@ import (
 )
 
 const (
-	DEFAULT_PORT = "0.0.0.0:31315"
-	NETWORK      = "tcp"
+	DEFAULT_PORT = ":31315"
+	NETWORK      = "tcp4"
 )
-var	count = 0
+
+var count = 0
 
 func server() {
 	lnr, err := net.Listen(NETWORK, DEFAULT_PORT)
 	if err != nil {
 		log.Fatal(err)
-	} 
+	}
 	log.Println("Listening...")
 	defer lnr.Close()
 	for {
@@ -26,10 +27,10 @@ func server() {
 		if err != nil {
 			log.Println(err)
 			break
-		} 
+		}
 		defer conn.Close()
 		conn.SetDeadline(time.Now().Add(60 * time.Second))
-		go handleConnection(conn)	
+		go handleConnection(conn)
 	}
 }
 
