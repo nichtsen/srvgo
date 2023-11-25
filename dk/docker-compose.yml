@@ -2,9 +2,9 @@ version: "3.7"
 services:
   tcpsrv:
     build: .
-    image: tcpsrv:v1
+    image: nichtsen/srvgo:v5
     deploy:
-      replicas: 3 
+      replicas: 1 
       resources:
         limits:
           cpus: "0.1"
